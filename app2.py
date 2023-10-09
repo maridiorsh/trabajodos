@@ -18,6 +18,7 @@ import cv2
 import numpy as np
 import pytesseract
 from PIL import Image
+import io
 
 st.title("Reconocimiento óptico de Caracteres")
 
@@ -29,7 +30,7 @@ with st.sidebar:
 if img_file_buffer is not None:
     # Leer la imagen
     bytes_data = img_file_buffer.read()
-    image = Image.open(img_file_buffer)
+    image = Image.open(io.BytesIO(bytes_data))
     st.image(image, caption="Imagen cargada", use_column_width=True)
 
     # Convertir la imagen en texto utilizando pytesseract
@@ -46,5 +47,6 @@ if img_file_buffer is not None:
     if st.button("Convertir a audio"):
         if text:
             tts = gTTS(text, lang='es', slow=False)  # Cambia 'es' al idioma que desees
-            audio_bytes = tts.get_bytes()
+            audio_stream = tts.get_audio_stream()
+            audio_bytes = io.BytesIO(audio_stream.read())
             st.audio(audio_bytes, format="audio/mpeg", start_time=0)
