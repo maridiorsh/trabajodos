@@ -17,43 +17,7 @@ import os
 import glob
 import time
 
-# Establecer el color de fondo a rojo
-st.markdown(
-    """
-    <style>
-    body {
-        background-color: #FF0000; /* Color rojo en formato hexadecimal */
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-# Establecer estilos para los títulos
-st.markdown(
-    """
-    <style>
-    .title {
-        font-size: 36px;
-        color: white;
-        text-align: center;
-        padding: 20px;
-    }
-    .header {
-        font-size: 24px;
-        color: white;
-        padding: 10px;
-        background-color: #800000; /* Color rojo oscuro */
-        border-radius: 10px;
-        text-align: center;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-# Título principal
-st.markdown("<h1 class='title'>OCR y Text-to-Speech</h1>", unsafe_allow_html=True)
+st.header("Sección 1: Introducción")
 
 # Resto del código Streamlit
 
