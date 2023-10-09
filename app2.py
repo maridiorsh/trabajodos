@@ -13,6 +13,10 @@ import pytesseract
 from gtts import gTTS
 from bokeh.models.widgets import Button
 from bokeh.models import CustomJS
+import streamlit as st
+import os
+import time
+import glob
 
 # Define la función text_to_speech
 def text_to_speech(text, tld):
