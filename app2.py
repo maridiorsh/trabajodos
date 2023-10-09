@@ -17,7 +17,7 @@ import os
 import glob
 import time
 
-st.header("Sección 1: Introducción")
+st.header("BIENVENIDO A IMAGINATION")
 
 # Resto del código Streamlit
 
