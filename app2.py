@@ -31,6 +31,9 @@ def text_to_speech(text, tld):
 with st.sidebar:
     filtro = st.radio("Aplicar Filtro", ('Con Filtro', 'Sin Filtro'))
 
+# Definir tld
+tld = "es"  # Cambia "es" al idioma que desees
+
 # Cargar la imagen
 img_file_buffer = st.file_uploader("Cargar imagen", type=["jpg", "png", "jpeg"])
 if img_file_buffer is not None:
