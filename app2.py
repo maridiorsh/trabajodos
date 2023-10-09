@@ -19,13 +19,6 @@ import numpy as np
 import pytesseract
 from PIL import Image
 
-import streamlit as st
-import cv2
-import numpy as np
-import pytesseract
-from gtts import gTTS
-from PIL import Image
-
 st.title("Reconocimiento óptico de Caracteres")
 
 img_file_buffer = st.file_uploader("Cargar imagen", type=["jpg", "png", "jpeg"])
