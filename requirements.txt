@@ -4,3 +4,5 @@ pytesseract==0.3.8
 gtts==2.2.2
 opencv-python-headless==4.5.3
 pillow==8.2.0
+pydub==0.25.1
+ffmpeg-python==0.2.0
