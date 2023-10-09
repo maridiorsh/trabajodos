@@ -17,8 +17,17 @@ import os
 import glob
 import time
 
+st.markdown(
+    """
+    <style>
+    body {
+        background-color: #FF0000; /* Color rojo en formato hexadecimal */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
 
-color_fondo = (0, 128, 255)
 st.header("BIENVENIDO A IMAGINATION")
 st.write("Una aplicación con inteligencia artificial en donde podrás mediante una imagen, extraer texto y a su vez convertirlo en un audio")
 
