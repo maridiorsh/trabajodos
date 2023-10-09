@@ -16,6 +16,8 @@ from gtts import gTTS
 import os
 import glob
 import time
+import pygame
+import sys
 
 st.header("BIENVENIDO A IMAGINATION")
 st.write("Una aplicación con inteligencia artificial en donde podrás mediante una imagen, extraer texto y a su vez convertirlo en un audio")
