@@ -18,6 +18,7 @@ import cv2
 import numpy as np
 import pytesseract
 from PIL import Image
+from pydub import AudioSegment
 import io
 
 st.title("Reconocimiento óptico de Caracteres")
@@ -47,6 +48,11 @@ if img_file_buffer is not None:
     if st.button("Convertir a audio"):
         if text:
             tts = gTTS(text, lang='es', slow=False)  # Cambia 'es' al idioma que desees
-            audio_stream = tts.get_audio_stream()
-            audio_bytes = io.BytesIO(audio_stream.read())
-            st.audio(audio_bytes, format="audio/mpeg", start_time=0)
+            audio_bytes = io.BytesIO()
+            tts.save(audio_bytes)
+            
+            # Convierte el audio a un formato compatible con Streamlit (MP3)
+            audio_segment = AudioSegment.from_file(audio_bytes, format="mp3")
+            audio_bytes = audio_segment.export(format="mp3").read()
+            
+            st.audio(audio_bytes, format="audio/mp3", start_time=0)
