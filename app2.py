@@ -18,7 +18,6 @@ import cv2
 import numpy as np
 import pytesseract
 from PIL import Image
-from pydub import AudioSegment
 import io
 
 st.title("Reconocimiento óptico de Caracteres")
