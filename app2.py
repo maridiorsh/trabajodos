@@ -26,9 +26,6 @@ def text_to_speech(text, tld):
     tts.save(f"temp/{my_file_name}.mp3")
     return my_file_name
 
-with st.sidebar:
-    filtro = st.radio("Aplicar Filtro", ('Con Filtro', 'Sin Filtro'))
-
 #Definir tld
 tld = "es"  # Cambia "es" al idioma que desees
 
@@ -39,8 +36,6 @@ if img_file_buffer is not None:
     st.image(image, caption="Imagen cargada", use_column_width=True)
 
     cv2_img = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
-    if filtro == 'Con Filtro':
-        cv2_img = cv2.bitwise_not(cv2_img)
     text = pytesseract.image_to_string(cv2_img)
     st.write(text)
 
