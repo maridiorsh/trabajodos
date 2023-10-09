@@ -8,62 +8,36 @@ Original file is located at
 """
 
 import streamlit as st
-from PIL import Image
-import pytesseract
-from gtts import gTTS
-from bokeh.models.widgets import Button
-from bokeh.models import CustomJS
-import streamlit as st
 import os
 import time
 import glob
+import os
+from gtts import gTTS
+from PIL import Image
+import cv2
+import numpy as np
+import pytesseract
+from PIL import Image
 
-# Define la función text_to_speech
-def text_to_speech(text, tld):
-    tts = gTTS(text, lang=tld, slow=False)
-    try:
-        my_file_name = text[0:20]
-    except:
-        my_file_name = "audio"
-    tts.save(f"temp/{my_file_name}.mp3")
-    return my_file_name
+st.title("Reconocimiento óptico de Caracteres")
 
-# Barra lateral con opciones
+img_file_buffer = st.camera_input("Toma una Foto")
+
 with st.sidebar:
-    filtro = st.radio("Aplicar Filtro", ('Con Filtro', 'Sin Filtro'))
+      filtro = st.radio("Aplicar Filtro",('Con Filtro', 'Sin Filtro'))
 
-# Cargar la imagen
-img_file_buffer = st.file_uploader("Cargar imagen", type=["jpg", "png", "jpeg"])
+
 if img_file_buffer is not None:
-    bytes_data = img_file_buffer.read()
-    image = Image.open(img_file_buffer)
-    st.image(image, caption="Imagen cargada", use_column_width=True)
-
-    # Convertir la imagen en texto utilizando pytesseract
-    cv2_img = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
+    # To read image file buffer with OpenCV:
+    bytes_data = img_file_buffer.getvalue()
+    cv2_img = cv2.imdecode(np.frombuffer(bytes_data, np.uint8), cv2.IMREAD_COLOR)
+    
     if filtro == 'Con Filtro':
-        cv2_img = cv2.bitwise_not(cv2_img)
-    text = pytesseract.image_to_string(cv2_img)
-    st.write("Texto extraído de la imagen:")
+         cv2_img=cv2.bitwise_not(cv2_img)
+    else:
+         cv2_img= cv2_img
+    
+        
+    img_rgb = cv2.cvtColor(cv2_img, cv2.COLOR_BGR2RGB)
+    text=pytesseract.image_to_string(img_rgb)
     st.write(text)
-
-# Entrada de texto para el usuario
-text_input = st.text_input("Escribe el texto que quieres convertir a audio")
-
-# Crear botón para convertir el texto en audio
-tts_button = Button(label="Decirlo", width=100)
-
-# Función JavaScript para la síntesis de voz
-javascript_code = f"""
-    var u = new SpeechSynthesisUtterance();
-    u.text = "{text_input}";
-    u.lang = 'es';  // Cambia 'es' al idioma que desees
-
-    speechSynthesis.speak(u);
-"""
-
-# Vincular el evento de clic del botón a la función JavaScript
-tts_button.js_on_event("button_click", CustomJS(code=javascript_code))
-
-# Mostrar el botón en la interfaz de Streamlit
-st.bokeh_chart(tts_button, use_container_width=True)
