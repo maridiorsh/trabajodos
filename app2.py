@@ -17,32 +17,6 @@ import os
 import glob
 import time
 
-# Estilo de la página
-st.set_page_config(
-    page_title="OCR y Text-to-Speech",
-    page_icon="🔍",
-    layout="wide"
-)
-
-# Estilos de la interfaz
-st.markdown(
-    """
-    <style>
-        .st-df {
-            background-color: #f0f0f0;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 5px #888888;
-        }
-        .st-ef {
-            padding: 20px;
-        }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
-# Función para convertir texto a voz
 def text_to_speech(text, tld):
     tts = gTTS(text, lang=tld, slow=False)
     try:
@@ -52,37 +26,28 @@ def text_to_speech(text, tld):
     tts.save(f"temp/{my_file_name}.mp3")
     return my_file_name
 
-# Definir tld
+#Definir tld
 tld = "es"  # Cambia "es" al idioma que desees
 
-# Encabezado
-st.title("Convertir Imagen a Texto y Voz")
-
-# Barra lateral
-st.sidebar.header("Configuración")
-st.sidebar.write("Seleccione una imagen y conviértala a texto y voz.")
-
-# Cargar imagen
-img_file_buffer = st.sidebar.file_uploader("Cargar imagen", type=["jpg", "png", "jpeg"])
+img_file_buffer = st.file_uploader("Cargar imagen", type=["jpg", "png", "jpeg"])
 if img_file_buffer is not None:
     bytes_data = img_file_buffer.read()
     image = Image.open(img_file_buffer)
-    st.sidebar.image(image, caption="Imagen cargada", use_column_width=True)
+    st.image(image, caption="Imagen cargada", use_column_width=True)
 
     cv2_img = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
     text = pytesseract.image_to_string(cv2_img)
-    st.sidebar.write(text)
+    st.write(text)
 
-# Botón de conversión a audio
-if st.sidebar.button("Convertir a audio") and text:
-    result = text_to_speech(text, tld)
-    audio_file = open(f"temp/{result}.mp3", "rb")
-    audio_bytes = audio_file.read()
-    st.sidebar.audio(audio_bytes, format="audio/mp3", start_time=0)
-    st.sidebar.markdown("## Texto en audio:")
-    st.sidebar.write(text)
-
-# Función para eliminar archivos antiguos
+if st.button("Convertir a audio"):
+    if text:
+        result = text_to_speech(text, tld)
+        audio_file = open(f"temp/{result}.mp3", "rb")
+        audio_bytes = audio_file.read()
+        st.audio(audio_bytes, format="audio/mp3", start_time=0)
+        st.markdown(f"## Texto en audio:")
+        st.write(f"{text}")
+        
 def remove_files(n):
     mp3_files = glob.glob("temp/*.mp3")
     if len(mp3_files) != 0:
@@ -93,5 +58,4 @@ def remove_files(n):
                 os.remove(f)
                 print("Deleted ", f)
 
-# Ejecutar la eliminación de archivos antiguos
 remove_files(7)
