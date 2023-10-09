@@ -45,6 +45,8 @@ if img_file_buffer is not None:
     text = pytesseract.image_to_string(cv2_img)
     st.write(text)
 
+tld="es"
+
 # Botón para convertir texto en audio
 if st.button("Convertir a audio"):
     if text:
