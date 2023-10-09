@@ -17,6 +17,47 @@ import os
 import glob
 import time
 
+# Establecer el color de fondo a rojo
+st.markdown(
+    """
+    <style>
+    body {
+        background-color: #FF0000; /* Color rojo en formato hexadecimal */
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# Establecer estilos para los títulos
+st.markdown(
+    """
+    <style>
+    .title {
+        font-size: 36px;
+        color: white;
+        text-align: center;
+        padding: 20px;
+    }
+    .header {
+        font-size: 24px;
+        color: white;
+        padding: 10px;
+        background-color: #800000; /* Color rojo oscuro */
+        border-radius: 10px;
+        text-align: center;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# Título principal
+st.markdown("<h1 class='title'>OCR y Text-to-Speech</h1>", unsafe_allow_html=True)
+
+# Resto del código Streamlit
+
+# Función para convertir texto a voz
 def text_to_speech(text, tld):
     tts = gTTS(text, lang=tld, slow=False)
     try:
@@ -26,7 +67,7 @@ def text_to_speech(text, tld):
     tts.save(f"temp/{my_file_name}.mp3")
     return my_file_name
 
-#Definir tld
+# Definir tld
 tld = "es"  # Cambia "es" al idioma que desees
 
 img_file_buffer = st.file_uploader("Cargar imagen", type=["jpg", "png", "jpeg"])
@@ -45,9 +86,10 @@ if st.button("Convertir a audio"):
         audio_file = open(f"temp/{result}.mp3", "rb")
         audio_bytes = audio_file.read()
         st.audio(audio_bytes, format="audio/mp3", start_time=0)
-        st.markdown(f"## Texto en audio:")
+        st.markdown("<h2 class='header'>Texto en audio:</h2>", unsafe_allow_html=True)
         st.write(f"{text}")
-        
+
+# Función para eliminar archivos antiguos
 def remove_files(n):
     mp3_files = glob.glob("temp/*.mp3")
     if len(mp3_files) != 0:
