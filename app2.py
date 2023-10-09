@@ -8,29 +8,34 @@ Original file is located at
 """
 
 import streamlit as st
-import os
-import time
-import glob
-import os
-from gtts import gTTS
-from PIL import Image
 import cv2
 import numpy as np
-import pytesseract
 from PIL import Image
-import io
+import pytesseract
+from gtts import gTTS
+import os
+import glob
+import time
 
-st.title("Reconocimiento óptico de Caracteres")
+# Define la función text_to_speech
+def text_to_speech(text, tld):
+    tts = gTTS(text, lang=tld, slow=False)
+    try:
+        my_file_name = text[0:20]
+    except:
+        my_file_name = "audio"
+    tts.save(f"temp/{my_file_name}.mp3")
+    return my_file_name
 
-img_file_buffer = st.file_uploader("Cargar imagen", type=["jpg", "png", "jpeg"])
-
+# Barra lateral con opciones
 with st.sidebar:
     filtro = st.radio("Aplicar Filtro", ('Con Filtro', 'Sin Filtro'))
 
+# Cargar la imagen
+img_file_buffer = st.file_uploader("Cargar imagen", type=["jpg", "png", "jpeg"])
 if img_file_buffer is not None:
-    # Leer la imagen
     bytes_data = img_file_buffer.read()
-    image = Image.open(io.BytesIO(bytes_data))
+    image = Image.open(img_file_buffer)
     st.image(image, caption="Imagen cargada", use_column_width=True)
 
     # Convertir la imagen en texto utilizando pytesseract
@@ -38,20 +43,27 @@ if img_file_buffer is not None:
     if filtro == 'Con Filtro':
         cv2_img = cv2.bitwise_not(cv2_img)
     text = pytesseract.image_to_string(cv2_img)
-
-    # Mostrar el texto extraído
-    st.write("Texto extraído de la imagen:")
     st.write(text)
 
-    # Crear un botón para convertir el texto en audio
-    if st.button("Convertir a audio"):
-        if text:
-            tts = gTTS(text, lang='es', slow=False)  # Cambia 'es' al idioma que desees
-            audio_bytes = io.BytesIO()
-            tts.save(audio_bytes)
-            
-            # Convierte el audio a un formato compatible con Streamlit (MP3)
-            audio_segment = AudioSegment.from_file(audio_bytes, format="mp3")
-            audio_bytes = audio_segment.export(format="mp3").read()
-            
-            st.audio(audio_bytes, format="audio/mp3", start_time=0)
+# Botón para convertir texto en audio
+if st.button("Convertir a audio"):
+    if text:
+        result = text_to_speech(text, tld)
+        audio_file = open(f"temp/{result}.mp3", "rb")
+        audio_bytes = audio_file.read()
+        st.audio(audio_bytes, format="audio/mp3", start_time=0)
+        st.markdown(f"## Texto en audio:")
+        st.write(f"{text}")
+
+# Función para eliminar archivos antiguos
+def remove_files(n):
+    mp3_files = glob.glob("temp/*.mp3")
+    if len(mp3_files) != 0:
+        now = time.time()
+        n_days = n * 86400
+        for f in mp3_files:
+            if os.stat(f).st_mtime < now - n_days:
+                os.remove(f)
+                print("Deleted ", f)
+
+remove_files(7)
