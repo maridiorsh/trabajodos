@@ -18,8 +18,8 @@ import glob
 import time
 
 st.header("BIENVENIDO A IMAGINATION")
+st.write("Una aplicación con inteligencia artificial en donde podrás mediante una imagen, extraer texto y a su vez convertirlo en un audio")
 
-# Resto del código Streamlit
 
 # Función para convertir texto a voz
 def text_to_speech(text, tld):
@@ -34,7 +34,8 @@ def text_to_speech(text, tld):
 # Definir tld
 tld = "es"  # Cambia "es" al idioma que desees
 
-img_file_buffer = st.file_uploader("Cargar imagen", type=["jpg", "png", "jpeg"])
+st.header("Paso 1")
+img_file_buffer = st.file_uploader("Carga aquí tu imagen", type=["jpg", "png", "jpeg"])
 if img_file_buffer is not None:
     bytes_data = img_file_buffer.read()
     image = Image.open(img_file_buffer)
@@ -43,7 +44,7 @@ if img_file_buffer is not None:
     cv2_img = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
     text = pytesseract.image_to_string(cv2_img)
     st.write(text)
-
+st.header("Paso 2")
 if st.button("Convertir a audio"):
     if text:
         result = text_to_speech(text, tld)
