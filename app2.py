@@ -16,8 +16,7 @@ from gtts import gTTS
 import os
 import glob
 import time
-import pygame
-import sys
+
 
 color_fondo = (0, 128, 255)
 st.header("BIENVENIDO A IMAGINATION")
