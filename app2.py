@@ -8,14 +8,11 @@ Original file is located at
 """
 
 import streamlit as st
-import cv2
-import numpy as np
 from PIL import Image
 import pytesseract
 from gtts import gTTS
-import os
-import glob
-import time
+from bokeh.models.widgets import Button
+from bokeh.models import CustomJS
 
 # Define la función text_to_speech
 def text_to_speech(text, tld):
@@ -43,29 +40,26 @@ if img_file_buffer is not None:
     if filtro == 'Con Filtro':
         cv2_img = cv2.bitwise_not(cv2_img)
     text = pytesseract.image_to_string(cv2_img)
+    st.write("Texto extraído de la imagen:")
     st.write(text)
 
-tld="es"
+# Entrada de texto para el usuario
+text_input = st.text_input("Escribe el texto que quieres convertir a audio")
 
-# Botón para convertir texto en audio
-if st.button("Convertir a audio"):
-    if text:
-        result = text_to_speech(text, tld)
-        audio_file = open(f"temp/{result}.mp3", "rb")
-        audio_bytes = audio_file.read()
-        st.audio(audio_bytes, format="audio/mp3", start_time=0)
-        st.markdown(f"## Texto en audio:")
-        st.write(f"{text}")
+# Crear botón para convertir el texto en audio
+tts_button = Button(label="Decirlo", width=100)
 
-# Función para eliminar archivos antiguos
-def remove_files(n):
-    mp3_files = glob.glob("temp/*.mp3")
-    if len(mp3_files) != 0:
-        now = time.time()
-        n_days = n * 86400
-        for f in mp3_files:
-            if os.stat(f).st_mtime < now - n_days:
-                os.remove(f)
-                print("Deleted ", f)
+# Función JavaScript para la síntesis de voz
+javascript_code = f"""
+    var u = new SpeechSynthesisUtterance();
+    u.text = "{text_input}";
+    u.lang = 'es';  // Cambia 'es' al idioma que desees
 
-remove_files(7)
+    speechSynthesis.speak(u);
+"""
+
+# Vincular el evento de clic del botón a la función JavaScript
+tts_button.js_on_event("button_click", CustomJS(code=javascript_code))
+
+# Mostrar el botón en la interfaz de Streamlit
+st.bokeh_chart(tts_button, use_container_width=True)
