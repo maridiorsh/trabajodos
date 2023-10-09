@@ -46,5 +46,5 @@ if img_file_buffer is not None:
     if st.button("Convertir a audio"):
         if text:
             tts = gTTS(text, lang='es', slow=False)  # Cambia 'es' al idioma que desees
-            audio_bytes = tts.get_audio_data()
+            audio_bytes = tts.get_bytes()
             st.audio(audio_bytes, format="audio/mpeg", start_time=0)
