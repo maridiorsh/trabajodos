@@ -16,6 +16,7 @@ from gtts import gTTS
 import os
 import glob
 import time
+import os
 
 def text_to_speech(text, tld):
     tts = gTTS(text, lang=tld, slow=False)
@@ -57,5 +58,19 @@ def remove_files(n):
             if os.stat(f).st_mtime < now - n_days:
                 os.remove(f)
                 print("Deleted ", f)
+
+temp_folder = "temp"
+os.makedirs(temp_folder, exist_ok=True)
+
+# Define la función text_to_speech
+def text_to_speech(text, tld):
+    tts = gTTS(text, lang=tld, slow=False)
+    try:
+        my_file_name = text[0:20]
+    except:
+        my_file_name = "audio"
+    mp3_file_path = os.path.join(temp_folder, f"{my_file_name}.mp3")
+    tts.save(mp3_file_path)
+    return my_file_name
 
 remove_files(7)
